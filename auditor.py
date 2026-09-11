@@ -8,6 +8,11 @@ while stock_quantity !="quit":
             stock_quantity = int(stock_quantity)
             print("Stock quantity entered:", stock_quantity)
             Inventory += stock_quantity
+            print("Total inventory:", Inventory)
+            if Inventory >500:
+                    print("Inventory limit exceeded. Cannot add more stock.")
+                    break
+                
     elif stock_quantity.isdigit() == False:
         print("Invalid input. Please enter a valid stock quantity")
     
