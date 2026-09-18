@@ -15,7 +15,18 @@ def get_valid_input(Failed):
                     print("Invalid input. Please enter a valid stock quantity")
                     Failed += 1
                     return get_valid_input(Failed)
+
+def process_delivery(Inventory,stock_quantity):
+            Inventory += int(stock_quantity)
+            print("New Total inventory:", Inventory)
+            if Inventory > 500:
+                print("Inventory limit exceeded. Cannot add more stock.")
+                return Inventory,True
+            return Inventory,False
+      
 while stock_quantity !="quit":
  stock_quantity,Failed=get_valid_input(Failed)
  print("Quantity entered:", stock_quantity)
  print("Number of Failed entries:", Failed)
+ Inventory=process_delivery(Inventory,stock_quantity)
+ 
