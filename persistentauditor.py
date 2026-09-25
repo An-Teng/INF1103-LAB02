@@ -3,26 +3,31 @@ Failed=0
 Processed=0
 item=[]
 Inventory=0
-Count=0
-try:
-    with open("inventory.txt", "r") as File:
-        data = File.read()
-        print(data.splitlines())
-        for line in data.splitlines():
-               Inventory +=int(line[-1])
-               Count+=1
-        print(f"Current Invetory: {Inventory}")
+Count=1
+def load_inventory(Inventory,item,Count):
+    try:
+        with open("inventory.txt", "r") as File:
+            Inventory=int(File.readline())
+            data = File.read()
+            item=data.splitlines()
+            print("=========Current Inventory=========")
+            for line in item:
+                print(line)
+                Count+=1
+            print(f"Total Invetory: {Inventory}")
+            return(Inventory,item,Count)
 
-except FileNotFoundError:
-       print("Inventory file not found. Starting with 0 inventory.")
-       Inventory=0
+    except FileNotFoundError:
+        print("Inventory file not found. Starting with 0 inventory.")
+        Inventory=0
+        return(Inventory,item,Count)
 
 def get_valid_input(Failed,Processed,count,item):
             object = input("Enter the item name: ")
             stock_quantity = input("Enter the stock quantity: ")
             try:
                     if stock_quantity=="quit":
-                        return stock_quantity,Failed,Processed
+                        return stock_quantity,Failed,Processed,count,item
                     if int(stock_quantity) < 0:
                         print("Invalid input. Stock quantity cannot be negative")
                         Failed += 1
@@ -30,16 +35,13 @@ def get_valid_input(Failed,Processed,count,item):
                     else:
                             Processed += 1
                             Single=str(Count)+", "+object+", "+stock_quantity
-                            print(Single)
                             item.append(Single)
                             count+=1
-                            print(item)
-
                             return stock_quantity,Failed,Processed,count,item
             except ValueError:
                     print("Invalid input. Please enter a valid stock quantity")
                     Failed += 1
-                    return get_valid_input(Failed,Processed)
+                    return get_valid_input(stock_quantity,Failed,Processed,count,item)
 
 def process_delivery(Inventory,stock_quantity):
             Inventory += int(stock_quantity)
@@ -58,12 +60,25 @@ def generate_report(Inventory,Processed,Failed):
             print("Total Units Processed:", Processed)
             print("Number of Failed entries:", Failed)
             print("Final Inventory:", Inventory)
+def save_invetory(item,Inventory):
+       print("Saving Inventory")
+       with open("inventory.txt", "w") as file:
+              file.write(str(Inventory))
+              for line in item:
+                     file.write("\n"+line)
+    #    with open("inventory.txt","a") as file:
+    #           for line in item:
+    #                  print(line)
+    #                  file.write("\n"+line)
+Inventory,item,Count=load_inventory(Inventory,item,Count)
 while stock_quantity !="quit":
- stock_quantity,Failed,Processed,Count,item=get_valid_input(Failed,Processed,Count,item)
- if stock_quantity == "quit":
-        break
- else:
-    Inventory=process_delivery(Inventory,stock_quantity)
-    tax_amount=calculate_tax(Inventory)
+    stock_quantity,Failed,Processed,Count,item=get_valid_input(Failed,Processed,Count,item)
 
+    if stock_quantity == "quit":
+            break
+    else:
+        Inventory=process_delivery(Inventory,stock_quantity)
+        tax_amount=calculate_tax(Inventory)
+
+save_invetory(item,Inventory)
 generate_report(Inventory,Processed,Failed)
