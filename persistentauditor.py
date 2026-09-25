@@ -1,13 +1,24 @@
 stock_quantity = 0
 Failed=0
 Processed=0
+item=[]
+Inventory=0
+Count=0
 try:
-    Inventory = int(open("inventory.txt", "r").read())
+    with open("inventory.txt", "r") as File:
+        data = File.read()
+        print(data.splitlines())
+        for line in data.splitlines():
+               Inventory +=int(line[-1])
+               Count+=1
+        print(f"Current Invetory: {Inventory}")
+
 except FileNotFoundError:
        print("Inventory file not found. Starting with 0 inventory.")
        Inventory=0
 
-def get_valid_input(Failed,Processed):
+def get_valid_input(Failed,Processed,count,item):
+            object = input("Enter the item name: ")
             stock_quantity = input("Enter the stock quantity: ")
             try:
                     if stock_quantity=="quit":
@@ -18,7 +29,13 @@ def get_valid_input(Failed,Processed):
                         return get_valid_input(Failed,Processed)
                     else:
                             Processed += 1
-                            return stock_quantity,Failed,Processed
+                            Single=str(Count)+", "+object+", "+stock_quantity
+                            print(Single)
+                            item.append(Single)
+                            count+=1
+                            print(item)
+
+                            return stock_quantity,Failed,Processed,count,item
             except ValueError:
                     print("Invalid input. Please enter a valid stock quantity")
                     Failed += 1
@@ -42,7 +59,7 @@ def generate_report(Inventory,Processed,Failed):
             print("Number of Failed entries:", Failed)
             print("Final Inventory:", Inventory)
 while stock_quantity !="quit":
- stock_quantity,Failed,Processed=get_valid_input(Failed,Processed)
+ stock_quantity,Failed,Processed,Count,item=get_valid_input(Failed,Processed,Count,item)
  if stock_quantity == "quit":
         break
  else:
