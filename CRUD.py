@@ -28,7 +28,7 @@ def menu():
     elif selection=="2":
          add_product()
     elif selection=="3":
-            print()
+            update_stock()
     elif selection=="4":
             print()
     elif selection=="5":
@@ -59,5 +59,21 @@ def add_product():
       with open("inventory.json", "w") as file:
             json.dump(data, file, indent=4)
       print(f"Product '{name}' added successfully.")
+      menu()
+def update_stock():
+      with open("inventory.json", "r") as file:
+            data = json.load(file)
+            product_id = int(input("Enter the product ID to update stock: "))
+            for product in data:
+                if product['id'] == product_id:
+                    new_stock = int(input(f"Enter the new stock quantity for '{product['name']}': "))
+                    product['stock'] = new_stock
+                    print(f"Stock for '{product['name']}' updated to {new_stock}.")
+                    break
+            else:
+                print("Product ID not found.")
+                update_stock()
+      with open("inventory.json", "w") as file:
+            json.dump(data, file, indent=4)
       menu()
 start()
