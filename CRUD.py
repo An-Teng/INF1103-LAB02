@@ -6,60 +6,53 @@ def start():
     try:
          with open("inventory.json", "r") as file:
                 print("Inventory loaded successfully.")
-                # Inventory = data.get("Inventory", 0)
-                # item = data.get("item", [])
-                menu()
+                data=json.load(file)
+                menu(data)
     except FileNotFoundError:
         print("Inventory file not found. Starting with 0 inventory.")
         with open("inventory.json", "w") as file:
               print()
-        menu()
-def menu():
+        data=[]
+        menu(data)
+def menu(data):
     print("=========Menu=========")
     print("1. Display All Products")
     print("2. Add products")
     print("3. Update Stock")
     print("4. Search Product")
-    print("5. Exit")
-    selection=input("Enter your choice (1-5): ")
+    print("5. Save Inventory")
+    print("6. Exit")
+    selection=input("Enter your choice (1-6): ")
     if selection=="1":
-         display_products()
+         display_products(data)
     elif selection=="2":
-         add_product()
+         add_product(data)
     elif selection=="3":
-            update_stock()
+            update_stock(data)
     elif selection=="4":
-            search_product()
+            search_product(data)
     elif selection=="5":
+          save_inventory(data)
+    elif selection=="6":
             print("Exiting the program.")
     else:
             print("Invalid selection. Please try again.")
-            menu()
+            menu(data)
 
-def display_products():
-      with open("inventory.json", "r") as file:
-            data = json.load(file)
-            print("=========Current Inventory=========")
+def display_products(data):
             for product in data:
                 print(f"ID: {product['id']}, Name: {product['name']}, Price: ${product['price']:.2f}, Stock: {product['stock']}")
-            menu() 
-def add_product():
-      with open("inventory.json", "r") as file:
-            data = json.load(file)
+            menu(data) 
+def add_product(data):
             new_id = len(data) + 1
             name = input("Enter the product name: ")
             price = float(input("Enter the product price: "))
             stock = int(input("Enter the product stock quantity: "))
             new_product = {"id": new_id, "name": name, "price": price, "stock": stock}
             data.append(new_product)
-            print(data)
-      with open("inventory.json", "w") as file:
-            json.dump(data, file, indent=4)
-      print(f"Product '{name}' added successfully.")
-      menu()
-def update_stock():
-      with open("inventory.json", "r") as file:
-            data = json.load(file)
+            print(f"Product '{name}' added successfully.")
+            menu(data)
+def update_stock(data):
             product_id = int(input("Enter the product ID to update stock: "))
             for product in data:
                 if product['id'] == product_id:
@@ -69,13 +62,10 @@ def update_stock():
                     break
             else:
                 print("Product ID not found.")
-                update_stock()
-      with open("inventory.json", "w") as file:
-            json.dump(data, file, indent=4)
-      menu()
-def search_product():
-      with open("inventory.json", "r") as file:
-            data = json.load(file)
+                update_stock(data)
+
+            menu(data)
+def search_product(data):
             search_name = input("Enter the product name to search: ")
             for product in data:
                 if search_name.lower() == product['name'].lower():
@@ -84,5 +74,11 @@ def search_product():
                     break
             else:
                 print("No products found with that name.")
-      menu()
+            menu(data)
+def save_inventory(data):
+      with open("inventory.json", "w") as file:
+            json.dump(data, file, indent=4)
+      print("Inventory saved successfully.")
+      menu(data)
 start()
+
