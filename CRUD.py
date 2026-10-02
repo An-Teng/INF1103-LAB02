@@ -26,7 +26,7 @@ def menu():
     if selection=="1":
          display_products()
     elif selection=="2":
-         print()
+         add_product()
     elif selection=="3":
             print()
     elif selection=="4":
@@ -44,6 +44,20 @@ def display_products():
             data = json.load(file)
             print("=========Current Inventory=========")
             for product in data:
-                print(f"ID: {product['id']}, Name: {product['name']}, Price: {product['price']}, Stock: {product['stock']}")   
-
+                print(f"ID: {product['id']}, Name: {product['name']}, Price: ${product['price']:.2f}, Stock: {product['stock']}")
+            menu() 
+def add_product():
+      with open("inventory.json", "r") as file:
+            data = json.load(file)
+            new_id = len(data) + 1
+            name = input("Enter the product name: ")
+            price = float(input("Enter the product price: "))
+            stock = int(input("Enter the product stock quantity: "))
+            new_product = {"id": new_id, "name": name, "price": price, "stock": stock}
+            data.append(new_product)
+            print(data)
+      with open("inventory.json", "w") as file:
+            json.dump(data, file, indent=4)
+      print(f"Product '{name}' added successfully.")
+      menu()
 start()
