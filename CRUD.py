@@ -20,9 +20,8 @@ def menu():
     print("2. Add products")
     print("3. Update Stock")
     print("4. Search Product")
-    print("5. Save Inventory")
-    print("6. Exit")
-    selection=input("Enter your choice (1-6): ")
+    print("5. Exit")
+    selection=input("Enter your choice (1-5): ")
     if selection=="1":
          display_products()
     elif selection=="2":
@@ -30,10 +29,8 @@ def menu():
     elif selection=="3":
             update_stock()
     elif selection=="4":
-            print()
+            search_product()
     elif selection=="5":
-            print()
-    elif selection=="6":
             print("Exiting the program.")
     else:
             print("Invalid selection. Please try again.")
@@ -75,5 +72,17 @@ def update_stock():
                 update_stock()
       with open("inventory.json", "w") as file:
             json.dump(data, file, indent=4)
+      menu()
+def search_product():
+      with open("inventory.json", "r") as file:
+            data = json.load(file)
+            search_name = input("Enter the product name to search: ")
+            for product in data:
+                if search_name.lower() == product['name'].lower():
+                    print("Product Found:")
+                    print(f"ID: {product['id']}, Name: {product['name']}, Price: ${product['price']:.2f}, Stock: {product['stock']}")
+                    break
+            else:
+                print("No products found with that name.")
       menu()
 start()
