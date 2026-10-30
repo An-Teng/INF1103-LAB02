@@ -19,7 +19,7 @@ class Product(ABC):
         self.__stock = quantity
 
     def display_information(self):
-        print(f"ID: {self.__product_id}, Name: {self.__name}, Price: ${self.__price:.2f}, Stock: {self.__stock}")
+        return (f"ID: {self.__product_id}, Name: {self.__name}, Price: ${self.__price:.2f}, Stock: {self.__stock}")
 
     def to_dict(self):
         return {"id": self.__product_id, "name": self.__name,
@@ -40,10 +40,12 @@ class PhysicalProduct(Product,CanbeShipped):
         return self.__weight
 
     def display_information(self):
-        super().display_information()
-        print(f"Weight: {self.__weight} kg")
+        result=super().display_information()
+        print(result+f" Weight: {self.__weight} kg")
+
     def to_dict(self):
         data = super().to_dict()
+        data["type"] = "Physical"
         data["weight"] = self.__weight
         return data
 
@@ -57,19 +59,20 @@ class PhysicalProduct(Product,CanbeShipped):
 
 
 class DigitalProduct(Product):
-    def __init__(self, product_id, name, price, stock, file_size):
+    def __init__(self, product_id, name, price, stock, download_size):
         super().__init__(product_id, name, price, stock)
-        self.__file_size = file_size
+        self.__download_size = download_size
 
     def get_file_size(self):
         return self.__file_size
 
     def display_information(self):
-        super().display_information() 
-        print(f"File Size: {self.__file_size} MB")
+        result=super().display_information() 
+        print(result+f" Download Size: {self.__download_size} MB")
     def to_dict(self):
         data = super().to_dict()
-        data["file_size"] = self.__file_size
+        data["type"] = "Digital"
+        data["download_size"] = self.__download_size
         return data
 
     def get_fulfilment_method(self):
