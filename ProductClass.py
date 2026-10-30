@@ -27,8 +27,11 @@ class Product(ABC):
     @abstractmethod
     def get_fulfilment_method(self):
         pass
-
-class PhysicalProduct(Product):
+class CanbeShipped(ABC):
+    @abstractmethod
+    def calculate_shipping_cost(self):
+        pass
+class PhysicalProduct(Product,CanbeShipped):
     def __init__(self, product_id, name, price, stock, weight):
         super().__init__(product_id, name, price, stock)
         self.__weight = weight
@@ -46,6 +49,12 @@ class PhysicalProduct(Product):
 
     def get_fulfilment_method(self):
         print("This is a physical product and will be shipped.")
+
+    def calculate_shipping_cost(self):
+        base_cost = 5.0  # Base shipping cost
+        cost_per_kg = 2.0  # Cost per kilogram
+        return base_cost + (cost_per_kg * self.__weight)
+
 
 class DigitalProduct(Product):
     def __init__(self, product_id, name, price, stock, file_size):
@@ -69,6 +78,6 @@ class DigitalProduct(Product):
 # test=PhysicalProduct("P001", "Laptop", 999.99, 10, 2.5)
 # test.display_information()
 # test.get_fulfilment_method()
-test2=DigitalProduct("D001", "E-book", 9.99, 100, 5)
-test2.display_information()
-test2.get_fulfilment_method()
+# test2=DigitalProduct("D001", "E-book", 9.99, 100, 5)
+# test2.display_information()
+# test2.get_fulfilment_method()
