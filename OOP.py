@@ -1,5 +1,5 @@
 import json
-from ProductClass import Product
+from ProductClass import Product, PhysicalProduct, DigitalProduct
 from InventoryClass import Inventory
 
 def load_inventory():
@@ -8,7 +8,10 @@ def load_inventory():
             data = json.load(file)
             inventory = Inventory()
             for item in data:
-                product = Product(item["id"], item["name"], item["price"], item["stock"])
+                if item.get("type") == "Physical":
+                    product = PhysicalProduct(item["id"], item["name"], item["price"], item["stock"], item["weight"])
+                elif item.get("type") == "Digital":
+                    product = DigitalProduct(item["id"], item["name"], item["price"], item["stock"], item["download_size"])
                 inventory.add_product(product)
             return inventory
     except FileNotFoundError:
@@ -35,12 +38,28 @@ def start():
         if choice == "1":
             inventory.display_products()
         elif choice == "2":
-            new_id = f"P{inventory.count() + 1:03d}"
-            name = input("Enter the product name: ")
-            price = float(input("Enter the product price: "))
-            stock = int(input("Enter the stock quantity: "))
-            inventory.add_product(Product(new_id, name, price, stock))
-            print(f"Product '{name}' added with ID {new_id}.")
+            print("1. Physical Product")
+            print("2. Digital Product")
+            product_type = input("Enter Product type (1 or 2): ")
+            if product_type == "1":
+                new_id = f"P{inventory.count() + 1:03d}"
+                name = input("Enter the product name: ")
+                price = float(input("Enter the product price: "))
+                stock = int(input("Enter the stock quantity: "))
+                weight = float(input("Enter the product weight (in kg): "))
+                inventory.add_product(PhysicalProduct(new_id, name, price, stock, weight))
+                print(f"Physical Product '{name}' added with ID {new_id}.")
+            elif product_type == "2":
+                new_id = f"D{inventory.count() + 1:03d}"
+                name = input("Enter the product name: ")
+                price = float(input("Enter the product price: "))
+                stock = int(input("Enter the stock quantity: "))
+                download_size = float(input("Enter the download size (in MB): "))
+                inventory.add_product(DigitalProduct(new_id, name, price, stock, download_size))
+                print(f"Digital Product '{name}' added with ID {new_id}.")
+            else:
+                print("Invalid product type selection.")
+                continue
         elif choice == "3":
             product = inventory.search_product(input("Enter the product name: "))
             if product:
