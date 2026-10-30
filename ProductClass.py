@@ -35,18 +35,19 @@ class PhysicalProduct(Product,CanbeShipped):
     def __init__(self, product_id, name, price, stock, weight):
         super().__init__(product_id, name, price, stock)
         self.__weight = weight
-
+        self.__shipping_cost=self.calculate_shipping_cost()
     def get_weight(self):
         return self.__weight
 
     def display_information(self):
         result=super().display_information()
-        print(result+f" Weight: {self.__weight} kg")
+        print(result+f" Weight: {self.__weight} kg"+f" Shipping Cost: ${self.__shipping_cost:.2f}")
 
     def to_dict(self):
         data = super().to_dict()
         data["type"] = "Physical"
         data["weight"] = self.__weight
+        data["shipping_cost"] = self.__shipping_cost
         return data
 
     def get_fulfilment_method(self):
