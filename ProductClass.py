@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
+from SupplierClass import Supplier
 class Product(ABC):
-    def __init__(self, product_id, name, price, stock):
+    def __init__(self, product_id, name, price, stock, supplier: Supplier):
         self.__product_id = product_id
         self.__name = name
         self.__price = price
         self.__stock = stock
+        self.supplier: Supplier = supplier
 
     def get_id(self):
         return self.__product_id
@@ -32,8 +34,8 @@ class CanbeShipped(ABC):
     def calculate_shipping_cost(self):
         pass
 class PhysicalProduct(Product,CanbeShipped):
-    def __init__(self, product_id, name, price, stock, weight):
-        super().__init__(product_id, name, price, stock)
+    def __init__(self, product_id, name, price, stock, weight,supplier: Supplier):
+        super().__init__(product_id, name, price, stock, supplier)
         self.__weight = weight
         self.__shipping_cost=self.calculate_shipping_cost()
     def get_weight(self):
@@ -60,8 +62,8 @@ class PhysicalProduct(Product,CanbeShipped):
 
 
 class DigitalProduct(Product):
-    def __init__(self, product_id, name, price, stock, download_size):
-        super().__init__(product_id, name, price, stock)
+    def __init__(self, product_id, name, price, stock, download_size, supplier: Supplier):
+        super().__init__(product_id, name, price, stock, supplier)
         self.__download_size = download_size
 
     def get_download_size(self):
