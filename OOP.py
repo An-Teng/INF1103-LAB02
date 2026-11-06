@@ -1,6 +1,7 @@
 import json
 from ProductClass import Product, PhysicalProduct, DigitalProduct
 from InventoryClass import Inventory
+from SupplierClass import Supplier
 
 def load_inventory():
     try:
@@ -47,7 +48,11 @@ def start():
                 price = float(input("Enter the product price: "))
                 stock = int(input("Enter the stock quantity: "))
                 weight = float(input("Enter the product weight (in kg): "))
-                inventory.add_product(PhysicalProduct(new_id, name, price, stock, weight))
+                supplier_id = input("Enter the supplier ID: ")
+                supplier_name = input("Enter the supplier name: ")
+                supplier_email = input("Enter the supplier contact email: ")
+                supplier = Supplier(supplier_id, supplier_name, supplier_email)
+                inventory.add_product(PhysicalProduct(new_id, name, price, stock, weight, supplier))
                 print(f"Physical Product '{name}' added with ID {new_id}.")
             elif product_type == "2":
                 new_id = f"D{inventory.count() + 1:03d}"
@@ -55,7 +60,11 @@ def start():
                 price = float(input("Enter the product price: "))
                 stock = int(input("Enter the stock quantity: "))
                 download_size = float(input("Enter the download size (in MB): "))
-                inventory.add_product(DigitalProduct(new_id, name, price, stock, download_size))
+                supplier_id = input("Enter the supplier ID: ")
+                supplier_name = input("Enter the supplier name: ")
+                supplier_email = input("Enter the supplier contact email: ")
+                supplier = Supplier(supplier_id, supplier_name, supplier_email)
+                inventory.add_product(DigitalProduct(new_id, name, price, stock, download_size, supplier))
                 print(f"Digital Product '{name}' added with ID {new_id}.")
             else:
                 print("Invalid product type selection.")
