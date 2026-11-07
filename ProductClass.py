@@ -13,6 +13,9 @@ class Product(ABC):
 
     def get_name(self):
         return self.__name
+    
+    def get_price(self):
+        return self.__price
 
     def update_stock(self,quantity):
         if quantity < 0 :
@@ -25,9 +28,10 @@ class Product(ABC):
 
     def to_dict(self):
         return {"id": self.__product_id, "name": self.__name,
-                "price": self.__price, "stock": self.__stock}
+                "price": self.__price, "stock": self.__stock,
+                "supplier": self.__supplier.to_dict()}
     @abstractmethod
-    def get_fulfilment_method(self):
+    def get_fulfilment_info(self):
         pass
 class CanbeShipped(ABC):
     @abstractmethod
@@ -44,6 +48,7 @@ class PhysicalProduct(Product,CanbeShipped):
     def display_information(self):
         result=super().display_information()
         print(result+f" Weight: {self.__weight} kg"+f" Shipping Cost: ${self.__shipping_cost:.2f}")
+        Supplier.display_information(self.supplier)
 
     def to_dict(self):
         data = super().to_dict()
@@ -52,8 +57,8 @@ class PhysicalProduct(Product,CanbeShipped):
         data["shipping_cost"] = self.__shipping_cost
         return data
 
-    def get_fulfilment_method(self):
-        print("This is a physical product and will be shipped.")
+    def get_fulfilment_info(self):
+        return("This is a physical product and will be shipped.")
 
     def calculate_shipping_cost(self):
         base_cost = 5.0  # Base shipping cost
@@ -72,14 +77,15 @@ class DigitalProduct(Product):
     def display_information(self):
         result=super().display_information() 
         print(result+f" Download Size: {self.__download_size} MB")
+        Supplier.display_information(self.supplier)
     def to_dict(self):
         data = super().to_dict()
         data["type"] = "Digital"
         data["download_size"] = self.__download_size
         return data
 
-    def get_fulfilment_method(self):
-        print("This is a digital product and will be delivered digitally.")
+    def get_fulfilment_info(self):
+        return("This is a digital product and will be delivered digitally.")
 
 # test=PhysicalProduct("P001", "Laptop", 999.99, 10, 2.5)
 # test.display_information()
