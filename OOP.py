@@ -9,10 +9,12 @@ def load_inventory():
             data = json.load(file)
             inventory = Inventory()
             for item in data:
+                s=item["supplier"]
+                supplier=Supplier(s["supplier_id"], s["name"], s["contact_email"])
                 if item.get("type") == "Physical":
-                    product = PhysicalProduct(item["id"], item["name"], item["price"], item["stock"], item["weight"])
+                    product = PhysicalProduct(item["id"], item["name"], item["price"], item["stock"], item["weight"],supplier)
                 elif item.get("type") == "Digital":
-                    product = DigitalProduct(item["id"], item["name"], item["price"], item["stock"], item["download_size"])
+                    product = DigitalProduct(item["id"], item["name"], item["price"], item["stock"], item["download_size"],supplier)
                 inventory.add_product(product)
             return inventory
     except FileNotFoundError:
@@ -33,8 +35,9 @@ def start():
         print("3. Update Stock")
         print("4. Search Product")
         print("5. Save Inventory")
-        print("6. Exit")
-        choice = input("Enter your choice (1-6): ")
+        print("6. Remove Product")
+        print("7. Exit")
+        choice = input("Enter your choice (1-7): ")
 
         if choice == "1":
             inventory.display_products()
@@ -85,6 +88,13 @@ def start():
         elif choice == "5":
             save_inventory(inventory)
         elif choice == "6":
+            product_id = input("Enter the product ID to remove: ")
+            product = inventory.remove_product(product_id)
+            if product:
+                print(f"Product with ID {product_id} removed.")
+            else:
+                print("No products found with that ID.")
+        elif choice == "7":
             print("Exiting the program.")
             break
         else:
