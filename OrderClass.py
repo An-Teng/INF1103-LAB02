@@ -5,6 +5,9 @@ class Order:
         self.__order_id = order_id
         self.__order_lines: list[OrderLineClass] = []
 
+    def get_order_lines(self):
+        return self.__order_lines
+
     def add_order_line(self, product: Product, quantity: int):
         order_line = OrderLineClass(product, quantity)
         self.__order_lines.append(order_line)
