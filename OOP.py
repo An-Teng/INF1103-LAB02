@@ -1,7 +1,9 @@
 import json
-from ProductClass import Product, PhysicalProduct, DigitalProduct
+from ProductClass import Product
 from InventoryClass import Inventory
+import ProductFactory
 from SupplierClass import Supplier
+from ProductFactory import ProductFactory
 
 def load_inventory():
     try:
@@ -11,10 +13,8 @@ def load_inventory():
             for item in data:
                 s=item["supplier"]
                 supplier=Supplier(s["supplier_id"], s["name"], s["contact_email"])
-                if item.get("type") == "Physical":
-                    product = PhysicalProduct(item["id"], item["name"], item["price"], item["stock"], item["weight"],supplier)
-                elif item.get("type") == "Digital":
-                    product = DigitalProduct(item["id"], item["name"], item["price"], item["stock"], item["download_size"],supplier)
+                extra = item.get("weight", item.get("download_size", 0.0))
+                product=ProductFactory.create_product(item["type"], item["product_id"], item["name"], item["price"], item["stock_quantity"], supplier, extra)
                 inventory.add_product(product)
             return inventory
     except FileNotFoundError:
@@ -45,33 +45,23 @@ def start():
             print("1. Physical Product")
             print("2. Digital Product")
             product_type = input("Enter Product type (1 or 2): ")
-            if product_type == "1":
-                new_id = f"P{inventory.count() + 1:03d}"
-                name = input("Enter the product name: ")
-                price = float(input("Enter the product price: "))
-                stock = int(input("Enter the stock quantity: "))
-                weight = float(input("Enter the product weight (in kg): "))
-                supplier_id = input("Enter the supplier ID: ")
-                supplier_name = input("Enter the supplier name: ")
-                supplier_email = input("Enter the supplier contact email: ")
-                supplier = Supplier(supplier_id, supplier_name, supplier_email)
-                inventory.add_product(PhysicalProduct(new_id, name, price, stock, weight, supplier))
-                print(f"Physical Product '{name}' added with ID {new_id}.")
-            elif product_type == "2":
-                new_id = f"D{inventory.count() + 1:03d}"
-                name = input("Enter the product name: ")
-                price = float(input("Enter the product price: "))
-                stock = int(input("Enter the stock quantity: "))
-                download_size = float(input("Enter the download size (in MB): "))
-                supplier_id = input("Enter the supplier ID: ")
-                supplier_name = input("Enter the supplier name: ")
-                supplier_email = input("Enter the supplier contact email: ")
-                supplier = Supplier(supplier_id, supplier_name, supplier_email)
-                inventory.add_product(DigitalProduct(new_id, name, price, stock, download_size, supplier))
-                print(f"Digital Product '{name}' added with ID {new_id}.")
-            else:
-                print("Invalid product type selection.")
+            if product_type is None:
+                print("Invalid product type. Please try again.")
                 continue
+            new_id=f"{product_type[0].upper()}{inventory.count()+1:03d}"
+            name=input("Enter Product name: ")
+            price=float(input("Enter Product price: "))
+            stock_quantity=int(input("Enter Product stock quantity: "))
+            prompts={"phyiscal":"Enter Product weight(kg): ",
+                     "digital":"Enter Product download size(MB): "}
+            extra=float(input(prompts[product_type.strip().lower()]))
+            supplier_id=input("Enter Supplier ID: ")
+            supplier_name=input("Enter Supplier Name: ")
+            supplier_email=input("Enter Supplier Contact Email: ")
+            supplier=Supplier(supplier_id, supplier_name, supplier_email)
+            inventory.add_product(ProductFactory.create_product(product_type, new_id, name, price, stock_quantity, supplier, extra))
+            print(f"{product_type.capitalize()} product {name} added successfully.")
+        
         elif choice == "3":
             product = inventory.search_product(input("Enter the product name: "))
             if product:
