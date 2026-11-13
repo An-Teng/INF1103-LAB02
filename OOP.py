@@ -5,6 +5,28 @@ import ProductFactory
 from SupplierClass import Supplier
 from ProductFactory import ProductFactory
 
+def get_positive_float(prompt: str) -> float:
+    while True:
+        try:
+            value = float(input(prompt))
+            if value <= 0:
+                print("Please enter a number greater than zero.")
+                continue
+            return value
+        except ValueError:
+            print("Please enter a valid number, e.g. 12.50")
+
+def get_non_negative_int(prompt: str) -> int:
+    while True:
+        try:
+            value = int(input(prompt))
+            if value < 0:
+                print("Stock cannot be negative.")
+                continue
+            return value
+        except ValueError:
+            print("Please enter a valid number, e.g. 12")
+
 def load_inventory():
     try:
         with open("inventory.json", "r") as file:
@@ -50,11 +72,11 @@ def start():
                 continue
             new_id=f"{product_type[0].upper()}{inventory.count()+1:03d}"
             name=input("Enter Product name: ")
-            price=float(input("Enter Product price: "))
-            stock_quantity=int(input("Enter Product stock quantity: "))
+            price=get_positive_float("Enter Product price: ")
+            stock_quantity=get_non_negative_int("Enter Product stock quantity: ")
             prompts={"phyiscal":"Enter Product weight(kg): ",
                      "digital":"Enter Product download size(MB): "}
-            extra=float(input(prompts[product_type.strip().lower()]))
+            extra=get_positive_float(prompts[product_type.strip().lower()])
             supplier_id=input("Enter Supplier ID: ")
             supplier_name=input("Enter Supplier Name: ")
             supplier_email=input("Enter Supplier Contact Email: ")
