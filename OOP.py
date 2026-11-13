@@ -14,7 +14,7 @@ def load_inventory():
                 s=item["supplier"]
                 supplier=Supplier(s["supplier_id"], s["name"], s["contact_email"])
                 extra = item.get("weight", item.get("download_size", 0.0))
-                product=ProductFactory.create_product(item["type"], item["product_id"], item["name"], item["price"], item["stock_quantity"], supplier, extra)
+                product=ProductFactory.create(item["type"], item["product_id"], item["name"], item["price"], item["stock_quantity"], supplier, extra)
                 inventory.add_product(product)
             return inventory
     except FileNotFoundError:
@@ -59,7 +59,7 @@ def start():
             supplier_name=input("Enter Supplier Name: ")
             supplier_email=input("Enter Supplier Contact Email: ")
             supplier=Supplier(supplier_id, supplier_name, supplier_email)
-            inventory.add_product(ProductFactory.create_product(product_type, new_id, name, price, stock_quantity, supplier, extra))
+            inventory.add_product(ProductFactory.create(product_type, new_id, name, price, stock_quantity, supplier, extra))
             print(f"{product_type.capitalize()} product {name} added successfully.")
         
         elif choice == "3":
