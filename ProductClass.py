@@ -2,6 +2,10 @@ from abc import ABC, abstractmethod
 from SupplierClass import Supplier
 class Product(ABC):
     def __init__(self, product_id, name, price, stock, supplier: Supplier):
+        if price < 0:
+            raise ValueError("Price cannot be negative.")
+        if stock < 0:
+            raise ValueError("Stock cannot be negative.")
         self.__product_id = product_id
         self.__name = name
         self.__price = price
@@ -19,7 +23,7 @@ class Product(ABC):
 
     def update_stock(self,quantity):
         if quantity < 0 :
-            print("Stock cannot be negative.")
+            raise ValueError("Stock cannot be negative.")
             return
         self.__stock = quantity
 
