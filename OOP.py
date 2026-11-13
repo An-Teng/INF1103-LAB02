@@ -65,8 +65,11 @@ def start():
         elif choice == "3":
             product = inventory.search_product(input("Enter the product name: "))
             if product:
-                product.update_stock(int(input("Enter the new stock quantity: ")))
-                print("Stock updated.")
+                try:
+                    product.update_stock(int(input("Enter the new stock quantity: ")))
+                    print("Stock updated.")
+                except ValueError as err:
+                    print(err)
             else:
                 print("No products found with that name.")
         elif choice == "4":
