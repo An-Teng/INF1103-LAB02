@@ -1,6 +1,8 @@
 from ProductClass import Product
 class OrderLineClass:
     def __init__(self, product: Product, quantity):
+        if quantity < 0:
+            raise ValueError("Quantity cannot be negative.")
         self.__product: Product = product
         self.__quantity = quantity
 
